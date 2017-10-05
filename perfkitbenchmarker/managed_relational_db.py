@@ -105,13 +105,10 @@ class BaseManagedRelationalDb(resource.BaseResource):
     super(BaseManagedRelationalDb, self).__init__()
     self.spec = managed_relational_db_spec
 
-  def AddClientVms(self, vms):
+  def SetNetwork(self, network):
     # TODO(ferneyhough): assert # of VMs, and that VM(s) are in same
     # region as DB
-    self.client_vms = vms
-    if not self.client_vms:
-      return
-    self.network = vms[0].network
+    self.network = network
 
   def MakePsqlConnectionString(self, database_name):
     return '\'host={0} user={1} password={2} dbname={3}\''.format(
@@ -137,14 +134,14 @@ class BaseManagedRelationalDb(resource.BaseResource):
     }
     if self.spec.vm_spec.machine_type:
       metadata.update({
-        'managed_relational_db_machine_type': self.spec.vm_spec.machine_type,
+          'managed_relational_db_machine_type': self.spec.vm_spec.machine_type,
       })
     else:
       # TOOD(ferneyhough): fix this. Azure has no vm_spec, so need to try
       try:
         metadata.update({
-          'managed_relational_db_cpus': self.spec.vm_spec.cpus,
-          'managed_relational_db_memory': self.spec.vm_spec.memory,
+            'managed_relational_db_cpus': self.spec.vm_spec.cpus,
+            'managed_relational_db_memory': self.spec.vm_spec.memory,
         })
       except:
         pass
